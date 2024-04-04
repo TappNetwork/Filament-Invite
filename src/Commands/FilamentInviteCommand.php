@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Tapp\FilamentInvite\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class FilamentInviteCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'filament-invite';
 
     public $description = 'My command';
 
