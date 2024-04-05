@@ -2,8 +2,8 @@
 
 namespace Tapp\FilamentInvite\Actions;
 
-use Filament\Tables\Actions\Action;
 use Filament\Actions\Concerns\CanCustomizeProcess;
+use Filament\Tables\Actions\Action;
 
 class InviteAction extends Action
 {
