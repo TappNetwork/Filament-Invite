@@ -1,11 +1,7 @@
 {
     "name": "tapp/filament-invite",
     "description": "invite users from filament panel",
-    "keywords": [
-        "Tapp",
-        "laravel",
-        "filament-invite"
-    ],
+    "keywords": ["Tapp", "laravel", "filament-invite"],
     "homepage": "https://github.com/tapp/filament-invite",
     "support": {
         "issues": "https://github.com/tapp/filament-invite/issues",
@@ -21,14 +17,15 @@
     ],
     "require": {
         "php": "^8.1",
+        "clarkeash/doorman": "^9.0",
         "filament/filament": "^3.0",
         "spatie/laravel-package-tools": "^1.15.0"
     },
     "require-dev": {
         "laravel/pint": "^1.0",
-        "nunomaduro/collision": "^7.9",
+        "nunomaduro/collision": "^8.0",
         "nunomaduro/larastan": "^2.0.1",
-        "orchestra/testbench": "^8.0",
+        "orchestra/testbench": "^9.0",
         "pestphp/pest": "^2.1",
         "pestphp/pest-plugin-arch": "^2.0",
         "pestphp/pest-plugin-laravel": "^2.0",
