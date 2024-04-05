@@ -5,7 +5,7 @@ namespace Tapp\FilamentInvite;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 
-class FilamentInvitePlugin implements Plugin
+class InvitePlugin implements Plugin
 {
     public function getId(): string
     {
