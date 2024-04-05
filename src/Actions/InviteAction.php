@@ -1,6 +1,9 @@
 <?php
 
-namespace App\Actions;
+namespace Tapp\FilamentInvite\Actions;
+
+use Filament\Tables\Actions\Action;
+use Filament\Actions\Concerns\CanCustomizeProcess;
 
 class InviteAction extends Action
 {
@@ -10,75 +13,25 @@ class InviteAction extends Action
 
     public static function getDefaultName(): ?string
     {
-        return 'edit';
+        return 'invite';
     }
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->label(__('filament-actions::edit.single.label'));
+        $this->label(__('Invite'));
 
-        $this->modalHeading(fn (): string => __('filament-actions::edit.single.modal.heading', ['label' => $this->getRecordTitle()]));
+        $this->modalHeading(fn (): string => __('Invite Heading', ['label' => $this->getRecordTitle()]));
 
-        $this->modalSubmitActionLabel(__('filament-actions::edit.single.modal.actions.save.label'));
+        $this->modalSubmitActionLabel(__('Invite Submit'));
 
-        $this->successNotificationTitle(__('filament-actions::edit.single.notifications.saved.title'));
+        $this->successNotificationTitle(__('Invite Success'));
 
-        $this->icon(FilamentIcon::resolve('actions::edit-action') ?? 'heroicon-m-pencil-square');
-
-        $this->fillForm(function (Model $record, Table $table): array {
-            if ($translatableContentDriver = $table->makeTranslatableContentDriver()) {
-                $data = $translatableContentDriver->getRecordAttributesToArray($record);
-            } else {
-                $data = $record->attributesToArray();
-            }
-
-            if ($this->mutateRecordDataUsing) {
-                $data = $this->evaluate($this->mutateRecordDataUsing, ['data' => $data]);
-            }
-
-            return $data;
-        });
+        $this->icon('heroicon-m-envelope');
 
         $this->action(function (): void {
-            $this->process(function (array $data, Model $record, Table $table) {
-                $relationship = $table->getRelationship();
-
-                $translatableContentDriver = $table->makeTranslatableContentDriver();
-
-                if ($relationship instanceof BelongsToMany) {
-                    $pivot = $record->{$relationship->getPivotAccessor()};
-
-                    $pivotColumns = $relationship->getPivotColumns();
-                    $pivotData = Arr::only($data, $pivotColumns);
-
-                    if (count($pivotColumns)) {
-                        if ($translatableContentDriver) {
-                            $translatableContentDriver->updateRecord($pivot, $pivotData);
-                        } else {
-                            $pivot->update($pivotData);
-                        }
-                    }
-
-                    $data = Arr::except($data, $pivotColumns);
-                }
-
-                if ($translatableContentDriver) {
-                    $translatableContentDriver->updateRecord($record, $data);
-                } else {
-                    $record->update($data);
-                }
-            });
-
             $this->success();
         });
-    }
-
-    public function mutateRecordDataUsing(?Closure $callback): static
-    {
-        $this->mutateRecordDataUsing = $callback;
-
-        return $this;
     }
 }
