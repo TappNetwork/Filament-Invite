@@ -8,15 +8,15 @@ use Filament\Support\Assets\Css;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Event;
 use Livewire\Features\SupportTesting\Testable;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Tapp\FilamentInvite\Commands\FilamentInviteCommand;
 use Tapp\FilamentInvite\Testing\TestsFilamentInvite;
-use Illuminate\Auth\Events\PasswordReset;
-use Illuminate\Support\Facades\Event;
 
 class FilamentInviteServiceProvider extends PackageServiceProvider
 {
@@ -69,7 +69,7 @@ class FilamentInviteServiceProvider extends PackageServiceProvider
 
         // Listeners
         Event::listen(function (PasswordReset $event) {
-            if (!$event->user->hasVerifiedEmail()) {
+            if (! $event->user->hasVerifiedEmail()) {
                 $event->user->markEmailAsVerified();
             }
         });
