@@ -4,6 +4,10 @@ namespace Tapp\FilamentInvite\Actions;
 
 use Filament\Tables\Actions\Action;
 use Filament\Actions\Concerns\CanCustomizeProcess;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Password;
+use Tapp\FilamentInvite\Notifications\SetPassword;
+use Illuminate\Support\Facades\Notification;
 
 class InviteAction extends Action
 {
@@ -22,15 +26,26 @@ class InviteAction extends Action
 
         $this->label(__('Invite'));
 
-        $this->modalHeading(fn (): string => __('Invite Heading', ['label' => $this->getRecordTitle()]));
+        $this->modalHeading(__('Send Invite Email'));
 
-        $this->modalSubmitActionLabel(__('Invite Submit'));
-
-        $this->successNotificationTitle(__('Invite Success'));
+        $this->requiresConfirmation(true);
 
         $this->icon('heroicon-m-envelope');
 
+        $this->hidden(fn (Model $user) => $user->email_verified_at);
+
         $this->action(function (): void {
+            $result = $this->process(static function (Model $user) {
+                $token = Password::broker()->createToken($user);
+
+                // Use the method if the developer has specified one
+                if (method_exists($user, 'sendPasswordSetNotification')) {
+                    $user->sendPasswordSetNotification($token);
+                } else {
+                    Notification::send($user, new SetPassword($token));
+                }
+            });
+
             $this->success();
         });
     }

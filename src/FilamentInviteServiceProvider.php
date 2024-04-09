@@ -15,6 +15,8 @@ use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Tapp\FilamentInvite\Commands\FilamentInviteCommand;
 use Tapp\FilamentInvite\Testing\TestsFilamentInvite;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Facades\Event;
 
 class FilamentInviteServiceProvider extends PackageServiceProvider
 {
@@ -89,6 +91,13 @@ class FilamentInviteServiceProvider extends PackageServiceProvider
 
         // Testing
         Testable::mixin(new TestsFilamentInvite());
+
+        // Listeners
+        Event::listen(function (PasswordReset $event) {
+            if (!$event->user->hasVerifiedEmail()) {
+                $event->user->markEmailAsVerified();
+            }
+        });
     }
 
     protected function getAssetPackageName(): ?string
