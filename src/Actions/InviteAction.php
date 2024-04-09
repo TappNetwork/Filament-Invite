@@ -2,12 +2,12 @@
 
 namespace Tapp\FilamentInvite\Actions;
 
-use Filament\Tables\Actions\Action;
 use Filament\Actions\Concerns\CanCustomizeProcess;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Password;
 use Tapp\FilamentInvite\Notifications\SetPassword;
 use Illuminate\Support\Facades\Notification;
+use Filament\Tables\Actions\Action;
 
 class InviteAction extends Action
 {
