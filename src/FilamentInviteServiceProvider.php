@@ -28,7 +28,7 @@ class FilamentInviteServiceProvider extends PackageServiceProvider
     {
         // Listeners
         Event::listen(function (PasswordReset $event) {
-            if (!$event->user->hasVerifiedEmail()) {
+            if (! $event->user->hasVerifiedEmail()) {
                 $event->user->markEmailAsVerified();
             }
         });
