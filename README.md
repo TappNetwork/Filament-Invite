@@ -5,9 +5,7 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/tapp/filament-invite/fix-php-code-styling.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/tapp/filament-invite/actions?query=workflow%3A"Fix+PHP+code+styling"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/tapp/filament-invite.svg?style=flat-square)](https://packagist.org/packages/tapp/filament-invite)
 
-
-
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+Provides an action to invite users from filament users resource.
 
 ## Installation
 
@@ -17,37 +15,20 @@ You can install the package via composer:
 composer require tapp/filament-invite
 ```
 
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --tag="filament-invite-migrations"
-php artisan migrate
-```
-
-You can publish the config file with:
-
-```bash
-php artisan vendor:publish --tag="filament-invite-config"
-```
-
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag="filament-invite-views"
-```
-
-This is the contents of the published config file:
-
-```php
-return [
-];
-```
+This package is intended to be used for the default Laravel User model which implements password resets and email verification
 
 ## Usage
 
 ```php
-$filamentInvite = new Tapp\FilamentInvite();
-echo $filamentInvite->echoPhrase('Hello, Tapp!');
+use Tapp\FilamentInvite\Actions\InviteAction;
+
+public static function table(Table $table): Table
+{
+    return $table
+        ->actions([
+            InviteAction::make(),
+        ]);
+}
 ```
 
 ## Testing
@@ -70,8 +51,8 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Credits
 
-- [TappNetwork](https://github.com/scottgrayson)
-- [All Contributors](../../contributors)
+-   [TappNetwork](https://github.com/scottgrayson)
+-   [All Contributors](../../contributors)
 
 ## License
 
