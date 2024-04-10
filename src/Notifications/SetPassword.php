@@ -71,6 +71,7 @@ class SetPassword extends Notification
             ->action(__('Set Password'), url(config('app.url') . route('password.reset', [
                 'token' => $this->token,
                 'email' => $email,
+                'invite' => true,
             ], false)));
     }
 

@@ -15,7 +15,15 @@ You can install the package via composer:
 composer require tapp/filament-invite
 ```
 
-This package is intended to be used for the default Laravel User model which implements password resets and email verification
+You can publish the config using:
+
+```bash
+php artisan filament-invite:install
+```
+
+## Requirements
+
+-   User model which implements password resets and email verification (Laravel defaults)
 
 ## Usage
 

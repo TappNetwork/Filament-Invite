@@ -6,6 +6,9 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Event;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Spatie\LaravelPackageTools\Commands\InstallCommand;
+use Tapp\FilamentInvite\Http\InviteMiddleware;
+use Livewire\Livewire;
 
 class FilamentInviteServiceProvider extends PackageServiceProvider
 {
@@ -21,7 +24,13 @@ class FilamentInviteServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
 
-        $package->name(static::$name);
+        $package->name(static::$name)
+            ->hasInstallCommand(function (InstallCommand $command) {
+                $command
+                    ->publishConfigFile();
+            });
+
+        $package->hasConfigFile();
     }
 
     public function packageBooted(): void
@@ -31,7 +40,17 @@ class FilamentInviteServiceProvider extends PackageServiceProvider
             if (!$event->user->hasVerifiedEmail()) {
                 $event->user->markEmailAsVerified();
             }
+
+            session()->forget('invite');
         });
+
+        $router = $this->app['router'];
+
+        $router->pushMiddlewareToGroup('web', InviteMiddleware::class);
+
+        Livewire::addPersistentMiddleware([
+            InviteMiddleware::class,
+        ]);
     }
 
     protected function getAssetPackageName(): ?string
