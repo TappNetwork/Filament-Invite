@@ -2,5 +2,5 @@
 
 // config for Tapp/FilamentInvite
 return [
-    'expire' => 60 * 24 * 7,
+    'expire' => 60 * 24 * 2,
 ];
