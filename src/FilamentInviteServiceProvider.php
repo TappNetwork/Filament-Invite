@@ -4,11 +4,11 @@ namespace Tapp\FilamentInvite;
 
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Event;
+use Livewire\Livewire;
+use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Tapp\FilamentInvite\Http\InviteMiddleware;
-use Livewire\Livewire;
 
 class FilamentInviteServiceProvider extends PackageServiceProvider
 {
