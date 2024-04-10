@@ -8,12 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Password;
 use Tapp\FilamentInvite\Notifications\SetPassword;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 class InviteAction extends Action
 {
     use CanCustomizeProcess;
-
-    protected ?Closure $mutateRecordDataUsing = null;
 
     public static function getDefaultName(): ?string
     {
@@ -32,7 +31,7 @@ class InviteAction extends Action
 
         $this->icon('heroicon-m-envelope');
 
-        $this->hidden(fn (Model $user) => $user->email_verified_at);
+        $this->hidden(fn (MustVerifyEmail $user) => $user->hasVerifiedEmail());
 
         $this->action(function (): void {
             $result = $this->process(static function (Model $user) {
