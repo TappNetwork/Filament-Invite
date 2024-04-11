@@ -1,9 +1,9 @@
 <?php
 
-namespace Tapp\FilamentInvite\Actions;
+namespace Tapp\FilamentInvite\Tables;
 
 use Filament\Actions\Concerns\CanCustomizeProcess;
-use Filament\Actions\Action;
+use Filament\Tables\Actions\Action;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Password;
