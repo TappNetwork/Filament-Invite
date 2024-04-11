@@ -27,14 +27,26 @@ php artisan filament-invite:install
 
 ## Usage
 
-```php
-use Tapp\FilamentInvite\Actions\InviteAction;
+Add invite action to a table
 
+```php
 public static function table(Table $table): Table
 {
     return $table
         ->actions([
-            InviteAction::make(),
+            Tapp\FilamentInvite\Tables\InviteAction::make(),
+        ]);
+}
+```
+
+Invite action outside of a table uses a different class
+
+```php
+public static function table(Table $table): Table
+{
+    return $table
+        ->actions([
+            Tapp\FilamentInvite\Actions\InviteAction::make(),
         ]);
 }
 ```
