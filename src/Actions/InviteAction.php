@@ -30,6 +30,7 @@ class InviteAction extends Action
 
         $this->icon('heroicon-m-envelope');
 
+        // @phpstan-ignore-next-line
         $this->hidden(fn (Model $user) => $user->hasVerifiedEmail());
 
         $this->action(function (): void {
