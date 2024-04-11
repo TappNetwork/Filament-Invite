@@ -2,8 +2,8 @@
 
 namespace Tapp\FilamentInvite\Actions;
 
-use Filament\Actions\Concerns\CanCustomizeProcess;
 use Filament\Actions\Action;
+use Filament\Actions\Concerns\CanCustomizeProcess;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Password;
