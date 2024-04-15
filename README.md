@@ -51,6 +51,37 @@ public static function table(Table $table): Table
 }
 ```
 
+## Customization
+
+### Reset URL
+
+implement getResetPasswordUrl on the user model
+
+```php
+public function getResetPasswordUrl(string $token, array $parameters = []): string
+{
+    return URL::signedRoute(
+        'filament.admin.auth.password-reset.reset',
+        [
+            'email' => $this->email,
+            'token' => $token,
+            ...$parameters,
+        ],
+    );
+}
+```
+
+### Notification
+
+implement the sendPasswordResetNotification method on the user model
+
+```php
+public function sendPasswordResetNotification($token)
+{
+    Notification::send($this, new SetPassword($token));
+}
+```
+
 ## Testing
 
 ```bash
