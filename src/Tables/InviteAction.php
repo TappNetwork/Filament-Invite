@@ -31,7 +31,7 @@ class InviteAction extends Action
         $this->icon('heroicon-m-envelope');
 
         $this->hidden(function (Model $user) {
-            /**  @var \Illuminate\Contracts\Auth\MustVerifyEmail $user */
+            /** @var \Illuminate\Contracts\Auth\MustVerifyEmail $user */
             return $user->hasVerifiedEmail();
         });
 
