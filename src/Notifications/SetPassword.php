@@ -4,7 +4,6 @@ namespace Tapp\FilamentInvite\Notifications;
 
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\URL;
 
 class SetPassword extends Notification
 {
@@ -67,8 +66,8 @@ class SetPassword extends Notification
         }
 
         $message = (new MailMessage)
-                 ->subject(__('Account created'))
-                 ->line(__('An account for you has been created! Please set a password for your account!'));
+            ->subject(__('Account created'))
+            ->line(__('An account for you has been created! Please set a password for your account!'));
 
         if (method_exists($notifiable, 'getResetPasswordUrl')) {
             return $message->action(
@@ -78,10 +77,10 @@ class SetPassword extends Notification
         }
 
         return $message->action(__('Set Password'), url(config('app.url') . route('password.reset', [
-                'token' => $this->token,
-                'email' => $email,
-                'invite' => true,
-            ], false)));
+            'token' => $this->token,
+            'email' => $email,
+            'invite' => true,
+        ], false)));
     }
 
     /**
