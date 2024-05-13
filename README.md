@@ -34,7 +34,7 @@ public static function table(Table $table): Table
 {
     return $table
         ->actions([
-            Tapp\FilamentInvite\Tables\InviteAction::make(),
+            \Tapp\FilamentInvite\Tables\InviteAction::make(),
         ]);
 }
 ```
@@ -42,13 +42,13 @@ public static function table(Table $table): Table
 Invite action outside of a table uses a different class
 
 ```php
-public static function table(Table $table): Table
-{
-    return $table
-        ->actions([
-            Tapp\FilamentInvite\Actions\InviteAction::make(),
-        ]);
-}
+    protected function getHeaderActions(): array
+    {
+        return [
+            \Tapp\FilamentInvite\Actions\InviteAction::make(),
+        ];
+    }
+
 ```
 
 ## Customization

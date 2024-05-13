@@ -32,7 +32,7 @@ class InviteAction extends Action
 
         $this->hidden(function (Model $user) {
             /** @var \Illuminate\Contracts\Auth\MustVerifyEmail $user */
-            return $user->hasVerifiedEmail();
+            return $user->hasVerifiedEmail() || auth()->user()->can('edit', $user) === false;
         });
 
         $this->action(function (): void {
