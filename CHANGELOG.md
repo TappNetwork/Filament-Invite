@@ -2,6 +2,10 @@
 
 All notable changes to `Filament-Invite` will be documented in this file.
 
+## v1.0.6 - 2024-06-27
+
+**Full Changelog**: https://github.com/TappNetwork/Filament-Invite/compare/v1.0.5...v1.0.6
+
 ## v1.0.5 - 2024-05-13
 
 Check policy when determining if user can be invited
