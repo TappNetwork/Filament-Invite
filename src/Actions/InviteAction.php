@@ -41,7 +41,7 @@ class InviteAction extends Action
 
                 // Use the method if the developer has specified one
                 if (method_exists($user, 'sendPasswordResetNotification')) {
-                    $user->sendPasswordSetNotification($token);
+                    $user->sendPasswordResetNotification($token);
                 } else {
                     Notification::send($user, new SetPassword($token));
                 }
