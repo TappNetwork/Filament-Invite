@@ -2,6 +2,18 @@
 
 All notable changes to `Filament-Invite` will be documented in this file.
 
+## v1.0.8 - 2024-07-02
+
+### What's Changed
+
+* [FIX] Bug Wrong Call Function sendPasswordSetNotification by @tanyudii in https://github.com/TappNetwork/Filament-Invite/pull/5
+
+### New Contributors
+
+* @tanyudii made their first contribution in https://github.com/TappNetwork/Filament-Invite/pull/5
+
+**Full Changelog**: https://github.com/TappNetwork/Filament-Invite/compare/v1.0.7...v1.0.8
+
 ## v1.0.7 - 2024-06-28
 
 **Full Changelog**: https://github.com/TappNetwork/Filament-Invite/compare/v1.0.6...v1.0.7
