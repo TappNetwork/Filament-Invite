@@ -40,8 +40,8 @@ class InviteAction extends Action
                 $token = Password::broker()->createToken($user);
 
                 // Use the method if the developer has specified one
-                if (method_exists($user, 'sendPasswordResetNotification')) {
-                    $user->sendPasswordResetNotification($token);
+                if (method_exists($user, 'sendPasswordSetNotification')) {
+                    $user->sendPasswordSetNotification($token);
                 } else {
                     Notification::send($user, new SetPassword($token));
                 }

@@ -73,10 +73,10 @@ public function getResetPasswordUrl(string $token, array $parameters = []): stri
 
 ### Notification
 
-implement the sendPasswordResetNotification method on the user model
+implement the sendPasswordSetNotification method on the user model
 
 ```php
-public function sendPasswordResetNotification($token)
+public function sendPasswordSetNotification($token)
 {
     Notification::send($this, new SetPassword($token));
 }
