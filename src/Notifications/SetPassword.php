@@ -76,7 +76,7 @@ class SetPassword extends Notification
             );
         }
 
-        return $message->action(__('Set Password'), url(config('app.url') . route('password.reset', [
+        return $message->action(__('Set Password'), url(config('app.url') . route(config('filament-invite.routes.reset'), [
             'token' => $this->token,
             'email' => $email,
             'invite' => true,
