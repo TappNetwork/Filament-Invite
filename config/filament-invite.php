@@ -6,5 +6,5 @@ return [
 
     'routes' => [
         'reset' => 'password.reset',
-    ]
+    ],
 ];
