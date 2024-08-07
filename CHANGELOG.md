@@ -2,6 +2,20 @@
 
 All notable changes to `Filament-Invite` will be documented in this file.
 
+## v1.0.9 - 2024-08-07
+
+### What's Changed
+
+* Bump dependabot/fetch-metadata from 2.1.0 to 2.2.0 by @dependabot in https://github.com/TappNetwork/Filament-Invite/pull/7
+* Bump braces from 3.0.2 to 3.0.3 by @dependabot in https://github.com/TappNetwork/Filament-Invite/pull/8
+* configurable password reset route for filament only applications by @swilla in https://github.com/TappNetwork/Filament-Invite/pull/9
+
+### New Contributors
+
+* @swilla made their first contribution in https://github.com/TappNetwork/Filament-Invite/pull/9
+
+**Full Changelog**: https://github.com/TappNetwork/Filament-Invite/compare/v1.0.8...v1.0.9
+
 ## v1.0.8 - 2024-07-02
 
 ### What's Changed
