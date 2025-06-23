@@ -2,6 +2,7 @@
 
 namespace Tapp\FilamentInvite\Actions;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\CanCustomizeProcess;
 use Illuminate\Database\Eloquent\Model;
@@ -31,7 +32,7 @@ class InviteAction extends Action
         $this->icon('heroicon-m-envelope');
 
         $this->hidden(function (Model $user) {
-            /** @var \Illuminate\Contracts\Auth\MustVerifyEmail $user */
+            /** @var MustVerifyEmail $user */
             return $user->hasVerifiedEmail() || auth()->user()->can('update', $user) === false;
         });
 

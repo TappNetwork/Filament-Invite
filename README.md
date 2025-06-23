@@ -33,13 +33,13 @@ Add invite action to a table
 public static function table(Table $table): Table
 {
     return $table
-        ->actions([
-            \Tapp\FilamentInvite\Tables\InviteAction::make(),
+        ->recordActions([
+            \Tapp\FilamentInvite\Actions\InviteAction::make(),
         ]);
 }
 ```
 
-Invite action outside of a table uses a different class
+Add invite action to header actions
 
 ```php
     protected function getHeaderActions(): array
