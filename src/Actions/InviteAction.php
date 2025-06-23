@@ -2,9 +2,9 @@
 
 namespace Tapp\FilamentInvite\Actions;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\CanCustomizeProcess;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Password;
