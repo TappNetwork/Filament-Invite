@@ -1,0 +1,13 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Call to an undefined method Illuminate\\Contracts\\Auth\\PasswordBroker\:\:createToken\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Actions/InviteAction.php
+
+		-
+			message: '#^PHPDoc tag @var with type Illuminate\\Contracts\\Auth\\MustVerifyEmail is not subtype of native type Illuminate\\Database\\Eloquent\\Model\.$#'
+			identifier: varTag.nativeType
+			count: 1
+			path: src/Actions/InviteAction.php
