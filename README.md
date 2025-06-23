@@ -30,6 +30,8 @@ composer require tapp/filament-invite:"^1.0"
 composer require tapp/filament-invite:"^2.0"
 ```
 
+Please check the docs for [Filament 4 here](https://github.com/TappNetwork/Filament-Invite/tree/2.x)
+
 You can publish the config using:
 
 ```bash
