@@ -2,6 +2,24 @@
 
 All notable changes to `Filament-Invite` will be documented in this file.
 
+## v2.0.0 - 2025-06-23
+
+### What's Changed
+
+* Bump dependabot/fetch-metadata from 2.2.0 to 2.3.0 by @dependabot in https://github.com/TappNetwork/Filament-Invite/pull/10
+* Bump axios from 1.6.8 to 1.7.9 by @dependabot in https://github.com/TappNetwork/Filament-Invite/pull/11
+* Bump aglipanci/laravel-pint-action from 2.4 to 2.5 by @dependabot in https://github.com/TappNetwork/Filament-Invite/pull/12
+* Bump esbuild from 0.19.12 to 0.25.0 by @dependabot in https://github.com/TappNetwork/Filament-Invite/pull/13
+* Bump dependabot/fetch-metadata from 2.3.0 to 2.4.0 by @dependabot in https://github.com/TappNetwork/Filament-Invite/pull/15
+* Bump axios from 1.7.9 to 1.9.0 by @dependabot in https://github.com/TappNetwork/Filament-Invite/pull/16
+* Filament 4 upgrade by @andreia in https://github.com/TappNetwork/Filament-Invite/pull/18
+
+### New Contributors
+
+* @andreia made their first contribution in https://github.com/TappNetwork/Filament-Invite/pull/18
+
+**Full Changelog**: https://github.com/TappNetwork/Filament-Invite/compare/v1.0.9...v2.0.0
+
 ## v1.0.9 - 2024-08-07
 
 ### What's Changed
