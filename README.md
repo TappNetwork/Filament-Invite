@@ -7,12 +7,27 @@
 
 Provides an action to invite users from Filament users resource.
 
+## Version Compatibility
+
+ Filament | Filament Value Range Filter
+:---------|:---------------------------
+ 3.x      | 1.x
+ 4.x      | 2.x
+
 ## Installation
 
-You can install the package via composer:
+You can install the package via Composer:
+
+### For Filament 3
 
 ```bash
-composer require tapp/filament-invite
+composer require tapp/filament-invite:"^1.0"
+```
+
+### For Filament 4
+
+```bash
+composer require tapp/filament-invite:"^2.0"
 ```
 
 You can publish the config using:
@@ -33,13 +48,13 @@ Add invite action to a table
 public static function table(Table $table): Table
 {
     return $table
-        ->actions([
-            \Tapp\FilamentInvite\Tables\InviteAction::make(),
+        ->recordActions([
+            \Tapp\FilamentInvite\Actions\InviteAction::make(),
         ]);
 }
 ```
 
-Invite action outside of a table uses a different class
+Add invite action to header actions
 
 ```php
     protected function getHeaderActions(): array
