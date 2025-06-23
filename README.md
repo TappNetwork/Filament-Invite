@@ -9,8 +9,8 @@ Provides an action to invite users from Filament users resource.
 
 ## Version Compatibility
 
- Filament | Filament Value Range Filter
-:---------|:---------------------------
+ Filament | Filament Invite
+:---------|:---------------
  3.x      | 1.x
  4.x      | 2.x
 
