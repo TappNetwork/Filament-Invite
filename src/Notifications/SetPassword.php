@@ -2,18 +2,17 @@
 
 namespace Tapp\FilamentInvite\Notifications;
 
+use Filament\Facades\Filament;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
+use function config;
+use function route;
+use function rtrim;
+use function url;
+
 class SetPassword extends Notification
 {
-    /**
-     * The password set token.
-     *
-     * @var string
-     */
-    public $token;
-
     /**
      * The callback that should be used to build the mail message.
      *
@@ -27,10 +26,7 @@ class SetPassword extends Notification
      * @param  string  $token
      * @return void
      */
-    public function __construct($token)
-    {
-        $this->token = $token;
-    }
+    public function __construct(public $token, public ?string $filamentPanelId = null) {}
 
     /**
      * Get the notification's channels.
@@ -76,11 +72,18 @@ class SetPassword extends Notification
             );
         }
 
-        return $message->action(__('Set Password'), url(config('app.url') . route(config('filament-invite.routes.reset'), [
-            'token' => $this->token,
-            'email' => $email,
-            'invite' => true,
-        ], false)));
+        if (empty(config('filament-invite.routes.reset'))) {
+            $url = Filament::getPanel('admin')->getResetPasswordUrl($this->token, $notifiable, ['invite' => true]);
+        } else {
+            $domain = rtrim(Filament::getPanel($this->filamentPanelId)->getPath(), '/');
+            $url = url($domain . '/' . route(config('filament-invite.routes.reset'), [
+                'token' => $this->token,
+                'email' => $email,
+                'invite' => true,
+            ], false));
+        }
+
+        return $message->action(__('Set Password'), $url);
     }
 
     /**
