@@ -68,6 +68,34 @@ Invite action outside of a table uses a different class
 
 ```
 
+## Notification Routing
+
+The package uses a simple routing strategy for password reset URLs in invitation emails:
+
+- **Default**: If `filament-invite.routes.reset` config is empty, uses Filament's default routing
+- **Custom**: If a route name is configured, uses the specified custom route
+
+```php
+if (empty(config('filament-invite.routes.reset'))) {
+    $url = Filament::getResetPasswordUrl($this->token, $email, ['invite' => true]);
+} else {
+    $domain = rtrim(Filament::getPanel($this->filamentPanelId)->getPath(), '/');
+    $url = url($domain . '/' . route(config('filament-invite.routes.reset'), [
+        'token' => $this->token,
+        'email' => $email,
+        'invite' => true,
+    ], false));
+}
+```
+
+To use custom routing, set your route name in the config:
+
+```php
+'routes' => [
+    'reset' => 'your.custom.route.name',
+],
+```
+
 ## Customization
 
 ### Reset URL
