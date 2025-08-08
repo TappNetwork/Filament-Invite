@@ -2,6 +2,12 @@
 
 All notable changes to `Filament-Invite` will be documented in this file.
 
+## v1.0.10 - 2025-08-08
+
+v1.0.10 release
+
+https://github.com/TappNetwork/Filament-Invite/pull/22
+
 ## v2.0.1 - 2025-08-07
 
 ### What's Changed
