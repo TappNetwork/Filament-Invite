@@ -40,7 +40,7 @@ class InviteAction extends Action
 
         $this->action(function (): void {
             $result = $this->process(static function (Model $user) {
-                $token = Password::broker()->createToken($user);
+                $token = Password::broker(Filament::getAuthPasswordBroker())->createToken($user);
 
                 // Use the method if the developer has specified one
                 if (method_exists($user, 'sendPasswordSetNotification')) {
