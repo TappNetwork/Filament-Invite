@@ -72,15 +72,40 @@ class SetPassword extends Notification
             );
         }
 
+        // Get the appropriate panel
+        $panel = $this->filamentPanelId
+            ? Filament::getPanel($this->filamentPanelId)
+            : Filament::getDefaultPanel();
+
         if (empty(config('filament-invite.routes.reset'))) {
-            $url = Filament::getPanel('admin')->getResetPasswordUrl($this->token, $notifiable, ['invite' => true]);
+            // Use Filament's built-in routing (respects panel's passwordResetRouteSlug configuration)
+            $url = $panel->getResetPasswordUrl($this->token, $notifiable, ['invite' => true]);
         } else {
-            $domain = rtrim(Filament::getPanel($this->filamentPanelId)->getPath(), '/');
-            $url = url($domain . '/' . route(config('filament-invite.routes.reset'), [
-                'token' => $this->token,
-                'email' => $email,
-                'invite' => true,
-            ], false));
+            // Support both custom routes and full URLs for maximum flexibility
+            $customRoute = config('filament-invite.routes.reset');
+
+            // Check if it's a full URL (starts with http/https)
+            if (str_starts_with($customRoute, 'http')) {
+                // Use the full URL directly
+                $url = $customRoute . '?' . http_build_query([
+                    'token' => $this->token,
+                    'email' => $email,
+                    'invite' => true,
+                ]);
+            } else {
+                // Use as route name - determine base URL based on configuration
+                $routeUrl = route($customRoute, [
+                    'token' => $this->token,
+                    'email' => $email,
+                    'invite' => true,
+                ], false);
+
+                // Choose base URL: panel URL or app.url (for backward compatibility)
+                $usePanelUrl = config('filament-invite.use_panel_url', false);
+                $baseUrl = $usePanelUrl ? $panel->getUrl() : config('app.url');
+
+                $url = rtrim($baseUrl, '/') . '/' . ltrim($routeUrl, '/');
+            }
         }
 
         return $message->action(__('Set Password'), $url);
