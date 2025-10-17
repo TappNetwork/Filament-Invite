@@ -48,7 +48,7 @@ class InviteAction extends Action
                 } elseif (method_exists($user, 'notify')) {
                     $user->notify(new SetPassword($token, Filament::getId()));
                 } else {
-                    Notification::send($user, new SetPassword($token, Filament::getId()));
+                    Notification::send($user, new SetPassword($token, Filament::getCurrentPanel()?->getId()));
                 }
             });
 
