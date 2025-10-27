@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Password;
 use Tapp\FilamentInvite\Notifications\SetPassword;
 
+use function method_exists;
+
 class InviteAction extends Action
 {
     use CanCustomizeProcess;
@@ -43,8 +45,10 @@ class InviteAction extends Action
                 // Use the method if the developer has specified one
                 if (method_exists($user, 'sendPasswordSetNotification')) {
                     $user->sendPasswordSetNotification($token);
+                } elseif (method_exists($user, 'notify')) {
+                    $user->notify(new SetPassword($token, Filament::getCurrentPanel()?->getId()));
                 } else {
-                    Notification::send($user, new SetPassword($token));
+                    Notification::send($user, new SetPassword($token, Filament::getCurrentPanel()?->getId()));
                 }
             });
 

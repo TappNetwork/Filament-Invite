@@ -68,6 +68,114 @@ Invite action outside of a table uses a different class
 
 ```
 
+## Notification Routing
+
+The password reset URL can be customized or use the Filament's authentication system:
+
+- **Default**: Uses Filament's built-in routing (respects panel's `passwordResetRouteSlug` configuration)
+- **Custom**: Uses completely custom routes outside Filament's authentication system
+
+```php
+// Get the appropriate panel
+$panel = $this->filamentPanelId
+    ? Filament::getPanel($this->filamentPanelId)
+    : Filament::getDefaultPanel();
+
+if (empty(config('filament-invite.routes.reset'))) {
+    // Use Filament's built-in routing (respects panel's passwordResetRouteSlug configuration)
+    $url = $panel->getResetPasswordUrl($this->token, $notifiable, ['invite' => true]);
+} else {
+    // Support both custom routes and full URLs for maximum flexibility
+    $customRoute = config('filament-invite.routes.reset');
+
+    // Check if it's a full URL (starts with http/https)
+    if (str_starts_with($customRoute, 'http')) {
+        // Use the full URL directly
+        $url = $customRoute . '?' . http_build_query([
+            'token' => $this->token,
+            'email' => $email,
+            'invite' => true,
+        ]);
+    } else {
+        // Use as route name - determine base URL based on configuration
+        $routeUrl = route($customRoute, [
+            'token' => $this->token,
+            'email' => $email,
+            'invite' => true,
+        ], false);
+
+        // Choose base URL: panel URL or app.url (for backward compatibility)
+        $usePanelUrl = config('filament-invite.use_panel_url', false);
+        $baseUrl = $usePanelUrl ? $panel->getUrl() : config('app.url');
+
+        $url = rtrim($baseUrl, '/') . '/' . ltrim($routeUrl, '/');
+    }
+}
+```
+
+### Integration with Filament Panel Configuration
+
+When using the default routing, the package automatically respects your panel's authentication configuration:
+
+```php
+// In your panel configuration
+use Filament\Panel;
+
+public function panel(Panel $panel): Panel
+{
+    return $panel
+        ->passwordResetRouteSlug('custom-reset') // This will be used automatically
+        ->passwordResetRequestRouteSlug('custom-request');
+}
+```
+
+To use custom routing you have plenty of options:
+
+### Option 1: Custom Route Name
+
+```php
+'routes' => [
+    'reset' => 'your.custom.route.name',
+],
+```
+
+### Option 2: Full URL (External System)
+
+```php
+'routes' => [
+    'reset' => 'https://external-auth.example.com/reset-password',
+],
+```
+
+### Option 3: Different Domain/Subdomain
+
+```php
+'routes' => [
+    'reset' => 'https://auth.yourapp.com/password-reset',
+],
+```
+The package automatically detects whether you're providing a route name or a full URL and handles the URL construction accordingly.
+
+### URL Base Configuration
+
+For custom routes, you can choose between using the panel's URL or the application's URL:
+
+```php
+// config/filament-invite.php
+return [
+    'routes' => [
+        'reset' => 'your.custom.route.name',
+    ],
+    
+    // URL Configuration
+    'use_panel_url' => false, // Default: false (uses app.url for backward compatibility)
+];
+```
+
+**Options:**
+1. `'use_panel_url' => false` (default): Uses `config('app.url')` - maintains backward compatibility
+2. `'use_panel_url' => true`: Uses `$panel->getUrl()`
+
 ## Customization
 
 ### Reset URL

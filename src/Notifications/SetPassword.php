@@ -2,18 +2,17 @@
 
 namespace Tapp\FilamentInvite\Notifications;
 
+use Filament\Facades\Filament;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
+use function config;
+use function route;
+use function rtrim;
+use function url;
+
 class SetPassword extends Notification
 {
-    /**
-     * The password set token.
-     *
-     * @var string
-     */
-    public $token;
-
     /**
      * The callback that should be used to build the mail message.
      *
@@ -27,10 +26,7 @@ class SetPassword extends Notification
      * @param  string  $token
      * @return void
      */
-    public function __construct($token)
-    {
-        $this->token = $token;
-    }
+    public function __construct(public $token, public ?string $filamentPanelId = null) {}
 
     /**
      * Get the notification's channels.
@@ -76,11 +72,43 @@ class SetPassword extends Notification
             );
         }
 
-        return $message->action(__('Set Password'), url(config('app.url') . route(config('filament-invite.routes.reset'), [
-            'token' => $this->token,
-            'email' => $email,
-            'invite' => true,
-        ], false)));
+        // Get the appropriate panel
+        $panel = $this->filamentPanelId
+            ? Filament::getPanel($this->filamentPanelId)
+            : Filament::getDefaultPanel();
+
+        if (empty(config('filament-invite.routes.reset'))) {
+            // Use Filament's built-in routing (respects panel's passwordResetRouteSlug configuration)
+            $url = $panel->getResetPasswordUrl($this->token, $notifiable, ['invite' => true]);
+        } else {
+            // Support both custom routes and full URLs for maximum flexibility
+            $customRoute = config('filament-invite.routes.reset');
+
+            // Check if it's a full URL (starts with http/https)
+            if (str_starts_with($customRoute, 'http')) {
+                // Use the full URL directly
+                $url = $customRoute . '?' . http_build_query([
+                    'token' => $this->token,
+                    'email' => $email,
+                    'invite' => true,
+                ]);
+            } else {
+                // Use as route name - determine base URL based on configuration
+                $routeUrl = route($customRoute, [
+                    'token' => $this->token,
+                    'email' => $email,
+                    'invite' => true,
+                ], false);
+
+                // Choose base URL: panel URL or app.url (for backward compatibility)
+                $usePanelUrl = config('filament-invite.use_panel_url', false);
+                $baseUrl = $usePanelUrl ? $panel->getUrl() : config('app.url');
+
+                $url = rtrim($baseUrl, '/') . '/' . ltrim($routeUrl, '/');
+            }
+        }
+
+        return $message->action(__('Set Password'), $url);
     }
 
     /**
