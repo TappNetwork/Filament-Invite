@@ -2,6 +2,14 @@
 
 All notable changes to `Filament-Invite` will be documented in this file.
 
+## v1.0.11 - 2025-10-27
+
+### What's Changed
+
+* feat: add flexible routing system for invitation notifications by @andrii-trush in https://github.com/TappNetwork/Filament-Invite/pull/23
+
+**Full Changelog**: https://github.com/TappNetwork/Filament-Invite/compare/v1.0.10...v1.0.11
+
 ## v2.0.2 - 2025-08-08
 
 **Full Changelog**: https://github.com/TappNetwork/Filament-Invite/compare/v2.0.0...v2.0.2
