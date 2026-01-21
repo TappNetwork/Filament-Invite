@@ -2,6 +2,17 @@
 
 All notable changes to `Filament-Invite` will be documented in this file.
 
+## v2.0.3 - 2026-01-21
+
+### What's Changed
+
+* Bump dependabot/fetch-metadata from 2.4.0 to 2.5.0 by @dependabot[bot] in https://github.com/TappNetwork/Filament-Invite/pull/31
+* Bump actions/checkout from 4 to 6 by @dependabot[bot] in https://github.com/TappNetwork/Filament-Invite/pull/30
+* Bump stefanzweifel/git-auto-commit-action from 6 to 7 by @dependabot[bot] in https://github.com/TappNetwork/Filament-Invite/pull/32
+* Add Filament 5 support by @andreia in https://github.com/TappNetwork/Filament-Invite/pull/34
+
+**Full Changelog**: https://github.com/TappNetwork/Filament-Invite/compare/v2.0.2...v2.0.3
+
 ## v1.0.9 - 2024-08-07
 
 ### What's Changed
