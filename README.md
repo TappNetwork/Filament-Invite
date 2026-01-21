@@ -11,7 +11,7 @@ Provides an action to invite users from Filament users resource.
 
 Filament | Filament Invite | Documentation
 :--------|:-------------------|:--------------
-4.x      | 2.x                | Current
+4.x/5.x  | 2.x                | Current
 3.x      | 1.x                | [Check the docs](https://github.com/TappNetwork/Filament-Invite/tree/1.x)
 
 ## Installation
