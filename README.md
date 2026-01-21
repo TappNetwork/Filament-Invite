@@ -9,28 +9,18 @@ Provides an action to invite users from Filament users resource.
 
 ## Version Compatibility
 
- Filament | Filament Invite
-:---------|:---------------
- 3.x      | 1.x
- 4.x      | 2.x
+ Filament | Filament Invite | Documentation
+:--------|:-------------------|:--------------
+4.x      | 2.x                | [Check the docs](https://github.com/TappNetwork/Filament-Invite/tree/2.x)
+3.x      | 1.x                | Current
 
 ## Installation
 
 You can install the package via Composer:
 
-### For Filament 3
-
 ```bash
 composer require tapp/filament-invite:"^1.0"
 ```
-
-### For Filament 4
-
-```bash
-composer require tapp/filament-invite:"^2.0"
-```
-
-Please check the docs for [Filament 4 here](https://github.com/TappNetwork/Filament-Invite/tree/2.x)
 
 You can publish the config using:
 
