@@ -46,7 +46,8 @@ public static function table(Table $table): Table
 }
 ```
 
-Add invite action to header actions
+Add invite action to header actions in your resource view or edit page (e.g. `App\Filament\Resources\Users\Pages\EditUser.php` or `App\Filament\Resources\Users\Pages\ViewUser.php`), as the 
+`InviteAction` resolves the user from the current record, which is available on edit and view pages.
 
 ```php
     protected function getHeaderActions(): array
