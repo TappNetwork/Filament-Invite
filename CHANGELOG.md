@@ -2,6 +2,18 @@
 
 All notable changes to `Filament-Invite` will be documented in this file.
 
+## v2.1.0 - 2026-04-02
+
+### What's Changed
+
+* Bump minimatch by @dependabot[bot] in https://github.com/TappNetwork/Filament-Invite/pull/35
+* Bump ramsey/composer-install from 3 to 4 by @dependabot[bot] in https://github.com/TappNetwork/Filament-Invite/pull/36
+* Bump dependabot/fetch-metadata from 2.5.0 to 3.0.0 by @dependabot[bot] in https://github.com/TappNetwork/Filament-Invite/pull/38
+* Bump picomatch from 2.3.1 to 2.3.2 by @dependabot[bot] in https://github.com/TappNetwork/Filament-Invite/pull/39
+* Remove BladeCaptureDirectiveServiceProvider from tests by @swilla in https://github.com/TappNetwork/Filament-Invite/pull/40
+
+**Full Changelog**: https://github.com/TappNetwork/Filament-Invite/compare/v2.0.4...v2.1.0
+
 ## v2.0.4 - 2026-03-26
 
 ### What's Changed
