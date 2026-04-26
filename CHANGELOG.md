@@ -2,6 +2,20 @@
 
 All notable changes to `Filament-Invite` will be documented in this file.
 
+## v2.1.1 - 2026-04-26
+
+### What's Changed
+
+* Bump axios from 1.9.0 to 1.15.0 by @dependabot[bot] in https://github.com/TappNetwork/Filament-Invite/pull/41
+* Bump follow-redirects from 1.15.11 to 1.16.0 by @dependabot[bot] in https://github.com/TappNetwork/Filament-Invite/pull/42
+* Bump dependabot/fetch-metadata from 3.0.0 to 3.1.0 by @dependabot[bot] in https://github.com/TappNetwork/Filament-Invite/pull/43
+* Bump postcss from 8.4.38 to 8.5.10 by @dependabot[bot] in https://github.com/TappNetwork/Filament-Invite/pull/44
+* Drop PHP 8.2 support, add PHP 8.5 by @swilla in https://github.com/TappNetwork/Filament-Invite/pull/46
+* Add PHP 8.3, 8.4, and 8.5 support by @swilla in https://github.com/TappNetwork/Filament-Invite/pull/45
+* Fix CVE-2025-64756: update glob to 10.5.0 by @swilla in https://github.com/TappNetwork/Filament-Invite/pull/47
+
+**Full Changelog**: https://github.com/TappNetwork/Filament-Invite/compare/v2.1.0...v2.1.1
+
 ## v2.1.0 - 2026-04-02
 
 ### What's Changed
