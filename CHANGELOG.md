@@ -2,6 +2,14 @@
 
 All notable changes to `Filament-Invite` will be documented in this file.
 
+## v2.1.2 - 2026-05-08
+
+### What's Changed
+
+* Bump axios from 1.15.0 to 1.16.0 by @dependabot[bot] in https://github.com/TappNetwork/Filament-Invite/pull/48
+
+**Full Changelog**: https://github.com/TappNetwork/Filament-Invite/compare/v2.1.1...v2.1.2
+
 ## v2.1.1 - 2026-04-26
 
 ### What's Changed
