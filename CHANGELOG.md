@@ -2,6 +2,18 @@
 
 All notable changes to `Filament-Invite` will be documented in this file.
 
+## v2.1.3 - 2026-07-04
+
+### What's Changed
+
+- Allow Pest 5 in Composer dev constraints.
+- Preserve current stable Pest support for existing installs.
+- Include matching Pest plugin constraints where applicable.
+
+### Verification
+
+- PR checks passed, or local Composer validation/dry-run was used where the repository has no GitHub checks.
+
 ## v2.1.2 - 2026-05-08
 
 ### What's Changed
