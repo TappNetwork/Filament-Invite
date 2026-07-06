@@ -5,7 +5,6 @@ namespace Tapp\FilamentInvite\Actions;
 use Filament\Actions\BulkAction;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Tapp\FilamentInvite\Concerns\InvitesUsers;
 
 class InviteBulkAction extends BulkAction
@@ -34,10 +33,6 @@ class InviteBulkAction extends BulkAction
             $skippedCount = 0;
 
             foreach ($records as $user) {
-                if (! $user instanceof Model) {
-                    continue;
-                }
-
                 if (! $this->canInviteUser($user)) {
                     $skippedCount++;
 

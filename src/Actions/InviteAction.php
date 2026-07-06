@@ -31,7 +31,10 @@ class InviteAction extends Action
         $this->icon('heroicon-m-envelope');
 
         $this->hidden(function (Model $user) {
-            /** @var MustVerifyEmail $user */
+            if (! $user instanceof MustVerifyEmail) {
+                return true;
+            }
+
             return $user->hasVerifiedEmail() || auth()->user()->can('update', $user) === false;
         });
 

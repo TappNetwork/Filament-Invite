@@ -3,17 +3,25 @@
 namespace Tapp\FilamentInvite\Concerns;
 
 use Filament\Facades\Filament;
+use Illuminate\Auth\Passwords\PasswordBroker;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Password;
+use RuntimeException;
 use Tapp\FilamentInvite\Notifications\SetPassword;
 
 trait InvitesUsers
 {
     protected function sendInviteToUser(Model $user): void
     {
-        $token = Password::broker(Filament::getAuthPasswordBroker())->createToken($user);
+        $broker = Password::broker(Filament::getAuthPasswordBroker());
+
+        if (! $broker instanceof PasswordBroker) {
+            throw new RuntimeException('Unexpected password broker implementation.');
+        }
+
+        $token = $broker->createToken($user);
 
         if (method_exists($user, 'sendPasswordSetNotification')) {
             $user->sendPasswordSetNotification($token);
