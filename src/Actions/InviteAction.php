@@ -4,16 +4,14 @@ namespace Tapp\FilamentInvite\Actions;
 
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\CanCustomizeProcess;
-use Filament\Facades\Filament;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Password;
-use Tapp\FilamentInvite\Notifications\SetPassword;
+use Tapp\FilamentInvite\Concerns\InvitesUsers;
 
 class InviteAction extends Action
 {
     use CanCustomizeProcess;
+    use InvitesUsers;
 
     public static function getDefaultName(): ?string
     {
@@ -38,15 +36,8 @@ class InviteAction extends Action
         });
 
         $this->action(function (): void {
-            $result = $this->process(static function (Model $user) {
-                $token = Password::broker(Filament::getAuthPasswordBroker())->createToken($user);
-
-                // Use the method if the developer has specified one
-                if (method_exists($user, 'sendPasswordSetNotification')) {
-                    $user->sendPasswordSetNotification($token);
-                } else {
-                    Notification::send($user, new SetPassword($token));
-                }
+            $this->process(function (Model $user): void {
+                $this->sendInviteToUser($user);
             });
 
             $this->success();
