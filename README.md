@@ -59,6 +59,23 @@ Add invite action to header actions in your resource view or edit page (e.g. `Ap
 
 ```
 
+Add invite bulk action to table toolbar actions
+
+```php
+use Filament\Actions\BulkActionGroup;
+use Tapp\FilamentInvite\Actions\InviteBulkAction;
+
+public static function table(Table $table): Table
+{
+    return $table
+        ->toolbarActions([
+            BulkActionGroup::make([
+                InviteBulkAction::make(),
+            ]),
+        ]);
+}
+```
+
 ## Customization
 
 ### Reset URL

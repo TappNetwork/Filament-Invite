@@ -28,9 +28,9 @@ class FilamentInviteServiceProvider extends PackageServiceProvider
             ->hasInstallCommand(function (InstallCommand $command) {
                 $command
                     ->publishConfigFile();
-            });
-
-        $package->hasConfigFile();
+            })
+            ->hasConfigFile()
+            ->hasTranslations();
     }
 
     public function packageBooted(): void
