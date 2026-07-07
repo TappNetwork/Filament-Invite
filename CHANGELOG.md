@@ -2,6 +2,14 @@
 
 All notable changes to `Filament-Invite` will be documented in this file.
 
+## v2.2.0 - 2026-07-07
+
+### What's Changed
+
+* Add invite bulk action by @andreia in https://github.com/TappNetwork/Filament-Invite/pull/56
+
+**Full Changelog**: https://github.com/TappNetwork/Filament-Invite/compare/v2.1.3...v2.2.0
+
 ## v2.1.3 - 2026-07-04
 
 ### What's Changed
