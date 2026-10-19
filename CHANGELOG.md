@@ -2,6 +2,14 @@
 
 All notable changes to `Filament-Invite` will be documented in this file.
 
+## v2.3.0 - 2026-10-19
+
+### What's Changed
+
+* Add copy invite link action in https://github.com/TappNetwork/Filament-Invite/pull/66
+
+**Full Changelog**: https://github.com/TappNetwork/Filament-Invite/compare/v2.2.0...v2.3.0
+
 ## v2.2.0 - 2026-07-07
 
 ### What's Changed
