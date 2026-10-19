@@ -28,7 +28,9 @@ You can publish the config using:
 php artisan filament-invite:install
 ```
 
-The package registers a Filament panel plugin automatically so invite links that use panel password-reset routes get the extended `filament-invite.expire` window. You do not need to add middleware on the panel yourself. You may still register it explicitly if you prefer:
+The package attaches `FilamentInvitePlugin` to every panel while `PanelRegistry` is resolving (after your panel provider configures middleware, before Filament routes snapshot it). That puts `InviteMiddleware` on panel password-reset routes so invite links get the extended `filament-invite.expire` window — no panel provider changes required.
+
+You may still register the plugin explicitly; duplicate registration is a no-op:
 
 ```php
 use Tapp\FilamentInvite\FilamentInvitePlugin;

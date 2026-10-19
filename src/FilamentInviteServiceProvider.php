@@ -2,7 +2,7 @@
 
 namespace Tapp\FilamentInvite;
 
-use Filament\Facades\Filament;
+use Filament\PanelRegistry;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Event;
 use Livewire\Livewire;
@@ -34,6 +34,17 @@ class FilamentInviteServiceProvider extends PackageServiceProvider
             ->hasTranslations();
     }
 
+    public function packageRegistered(): void
+    {
+        // Attach after each PanelProvider has fully configured its panel, but while
+        // PanelRegistry is still resolving — before Filament routes call getMiddleware().
+        $this->app->afterResolving(PanelRegistry::class, function (PanelRegistry $registry): void {
+            foreach ($registry->all() as $panel) {
+                FilamentInvitePlugin::registerOnPanel($panel);
+            }
+        });
+    }
+
     public function packageBooted(): void
     {
         Event::listen(function (PasswordReset $event) {
@@ -50,14 +61,6 @@ class FilamentInviteServiceProvider extends PackageServiceProvider
         Livewire::addPersistentMiddleware([
             InviteMiddleware::class,
         ]);
-
-        // Filament panels do not use the `web` group — attach InviteMiddleware to every
-        // panel after it is fully configured so it runs after StartSession.
-        $this->app->booted(function (): void {
-            foreach (Filament::getPanels() as $panel) {
-                FilamentInvitePlugin::registerOnPanel($panel);
-            }
-        });
     }
 
     protected function getAssetPackageName(): ?string

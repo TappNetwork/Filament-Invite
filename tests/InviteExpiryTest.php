@@ -2,8 +2,10 @@
 
 use Filament\Auth\Pages\PasswordReset\ResetPassword;
 use Filament\Facades\Filament;
+use Filament\Panel;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
@@ -63,22 +65,42 @@ beforeEach(function (): void {
         ->get('/reset-password/{token}', fn () => 'ok')
         ->name('password.reset');
 
-    $panel = Filament::getPanel('admin');
-
-    expect($panel->hasPlugin(FilamentInvitePlugin::ID))->toBeTrue()
-        ->and($panel->getMiddleware())->toContain(InviteMiddleware::class);
-
-    // Panel auth routes use the panel middleware stack (not the `web` group).
-    Route::middleware([...$panel->getMiddleware(), 'signed'])
-        ->get('/admin/password-reset/reset', ResetPassword::class)
-        ->name('filament.admin.auth.password-reset.reset');
-
     Filament::setCurrentPanel('admin');
 });
 
 afterEach(function (): void {
     Schema::dropIfExists('password_reset_tokens');
     Schema::dropIfExists('users');
+});
+
+it('auto-attaches the invite plugin before panel routes snapshot middleware', function (): void {
+    $panel = Filament::getPanel('admin');
+    $middleware = $panel->getMiddleware();
+    $route = Route::getRoutes()->getByName('filament.admin.auth.password-reset.reset');
+
+    expect($panel->hasPlugin(FilamentInvitePlugin::ID))->toBeTrue()
+        ->and($middleware)->toContain(InviteMiddleware::class)
+        ->and(array_search(InviteMiddleware::class, $middleware, true))
+        ->toBeGreaterThan(array_search(StartSession::class, $middleware, true))
+        ->and($route)->not->toBeNull()
+        ->and($route->gatherMiddleware())->toContain(InviteMiddleware::class)
+        ->and($route->gatherMiddleware())->not->toContain('web');
+});
+
+it('does not register the invite plugin twice when added manually', function (): void {
+    $panel = Panel::make()
+        ->id('manual-plugin-panel')
+        ->path('manual-plugin')
+        ->middleware([StartSession::class])
+        ->plugin(FilamentInvitePlugin::make());
+
+    FilamentInvitePlugin::registerOnPanel($panel);
+
+    expect($panel->hasPlugin(FilamentInvitePlugin::ID))->toBeTrue()
+        ->and(array_values(array_filter(
+            $panel->getMiddleware(),
+            fn (string $middleware): bool => $middleware === InviteMiddleware::class,
+        )))->toHaveCount(1);
 });
 
 it('passes invite=1 into getResetPasswordUrl overrides', function (): void {
