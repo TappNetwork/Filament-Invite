@@ -65,6 +65,8 @@ Add invite action to header actions in your resource view or edit page (e.g. `Ap
 
 Use `CopyInviteLinkAction` when you want to generate the same set-password URL the invite email would contain, show it in a modal, and copy it to the clipboard — without sending a notification. This is useful when the app has no mail driver configured (for example Laravel Cloud without a verified sending domain).
 
+Opening the modal does not create a token. The admin clicks **Generate link** to mint the broker token and reveal the URL (the modal stays open for copying). Generating again invalidates any earlier invite link for that user, including emailed ones.
+
 Email invite (`InviteAction` / `InviteBulkAction`) remains the default; add `CopyInviteLinkAction` only where you need the manual copy flow. Eligibility matches `InviteAction` (unverified users the admin can update). The link uses the same password-broker token, package reset route / `getResetPasswordUrl()` override, and `invite=1` extended-expiry behavior as the email.
 
 Add invite bulk action to table toolbar actions

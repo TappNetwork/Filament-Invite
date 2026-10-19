@@ -2,22 +2,18 @@
 
 use Filament\Panel;
 use Filament\PanelRegistry;
-use Illuminate\Auth\Passwords\CanResetPassword;
-use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\URL;
+use Livewire\Livewire;
 use Tapp\FilamentInvite\Actions\CopyInviteLinkAction;
-use Tapp\FilamentInvite\Concerns\InvitesUsers;
 use Tapp\FilamentInvite\Notifications\SetPassword;
 use Tapp\FilamentInvite\Support\InviteUrl;
+use Tapp\FilamentInvite\Tests\Fixtures\Models\InviteTestUser;
+use Tapp\FilamentInvite\Tests\Fixtures\Models\InviteTestUserWithCustomResetUrl;
+use Tapp\FilamentInvite\Tests\Fixtures\Pages\EditInviteTestUser;
 
 beforeEach(function (): void {
     Schema::create('users', function (Blueprint $table): void {
@@ -76,46 +72,6 @@ it('registers copy invite link action with the expected default name', function 
     expect(CopyInviteLinkAction::getDefaultName())->toBe('copy_invite_link');
 });
 
-it('generates an invite link for an eligible user without sending a notification', function (): void {
-    Notification::fake();
-
-    $inviter = InviteTestUser::query()->create([
-        'name' => 'Admin',
-        'email' => 'admin@example.com',
-        'email_verified_at' => now(),
-        'password' => 'secret',
-    ]);
-
-    $invitee = InviteTestUser::query()->create([
-        'name' => 'Invitee',
-        'email' => 'invitee@example.com',
-        'email_verified_at' => null,
-        'password' => null,
-    ]);
-
-    $this->actingAs($inviter);
-
-    $action = new class
-    {
-        use InvitesUsers;
-
-        public function exposeCreateInviteLink(Model $user): string
-        {
-            return $this->createInviteLink($user);
-        }
-    };
-
-    $url = $action->exposeCreateInviteLink($invitee);
-
-    expect($url)
-        ->toBeString()
-        ->toContain('/reset-password/')
-        ->toContain('email=' . urlencode($invitee->email))
-        ->toContain('invite=1');
-
-    Notification::assertNothingSent();
-});
-
 it('builds the same URL shape the SetPassword notification would send', function (): void {
     $invitee = InviteTestUser::query()->create([
         'name' => 'Invitee',
@@ -148,7 +104,7 @@ it('uses getResetPasswordUrl when the user model defines it', function (): void 
         ->toBe($invitee->getResetPasswordUrl($token));
 });
 
-it('rejects creating an invite link for ineligible users', function (): void {
+it('hides the action for verified users', function (): void {
     $inviter = InviteTestUser::query()->create([
         'name' => 'Admin',
         'email' => 'admin@example.com',
@@ -156,7 +112,7 @@ it('rejects creating an invite link for ineligible users', function (): void {
         'password' => 'secret',
     ]);
 
-    $verifiedUser = InviteTestUser::query()->create([
+    $verified = InviteTestUser::query()->create([
         'name' => 'Verified',
         'email' => 'verified@example.com',
         'email_verified_at' => now(),
@@ -165,20 +121,54 @@ it('rejects creating an invite link for ineligible users', function (): void {
 
     $this->actingAs($inviter);
 
-    $action = new class
-    {
-        use InvitesUsers;
+    Livewire::test(EditInviteTestUser::class, ['record' => $verified])
+        ->assertActionHidden(CopyInviteLinkAction::class);
+});
 
-        public function exposeCreateInviteLink(Model $user): string
-        {
-            return $this->createInviteLink($user);
-        }
-    };
+it('hides the action when the admin cannot update the user', function (): void {
+    $inviter = InviteTestUser::query()->create([
+        'name' => 'Admin',
+        'email' => 'admin@example.com',
+        'email_verified_at' => now(),
+        'password' => 'secret',
+    ]);
+    $inviter->canUpdateOthers = false;
 
-    $action->exposeCreateInviteLink($verifiedUser);
-})->throws(RuntimeException::class, 'User cannot be invited.');
+    $invitee = InviteTestUser::query()->create([
+        'name' => 'Invitee',
+        'email' => 'invitee@example.com',
+        'email_verified_at' => null,
+        'password' => null,
+    ]);
 
-it('creates a password broker token that can be used to set a password', function (): void {
+    $this->actingAs($inviter);
+
+    Livewire::test(EditInviteTestUser::class, ['record' => $invitee])
+        ->assertActionHidden(CopyInviteLinkAction::class);
+});
+
+it('shows the action for eligible users', function (): void {
+    $inviter = InviteTestUser::query()->create([
+        'name' => 'Admin',
+        'email' => 'admin@example.com',
+        'email_verified_at' => now(),
+        'password' => 'secret',
+    ]);
+
+    $invitee = InviteTestUser::query()->create([
+        'name' => 'Invitee',
+        'email' => 'invitee@example.com',
+        'email_verified_at' => null,
+        'password' => null,
+    ]);
+
+    $this->actingAs($inviter);
+
+    Livewire::test(EditInviteTestUser::class, ['record' => $invitee])
+        ->assertActionVisible(CopyInviteLinkAction::class);
+});
+
+it('does not mint a token when the modal is opened', function (): void {
     Notification::fake();
 
     $inviter = InviteTestUser::query()->create([
@@ -197,77 +187,100 @@ it('creates a password broker token that can be used to set a password', functio
 
     $this->actingAs($inviter);
 
-    $action = new class
-    {
-        use InvitesUsers;
+    Livewire::test(EditInviteTestUser::class, ['record' => $invitee])
+        ->mountAction(CopyInviteLinkAction::class)
+        ->assertSchemaStateSet([
+            'invite_url' => null,
+        ]);
 
-        public function exposeCreateInviteToken(Model $user): string
-        {
-            return $this->createInviteToken($user);
-        }
-
-        public function exposeCreateInviteLink(Model $user): string
-        {
-            return $this->createInviteLink($user);
-        }
-    };
-
-    $token = $action->exposeCreateInviteToken($invitee);
-    $url = InviteUrl::for($invitee, $token);
-
-    expect($url)->toContain($token)
-        ->and(Password::broker()->tokenExists($invitee, $token))->toBeTrue();
-
-    // Creating via the link helper also yields a broker-valid token embedded in the URL.
-    $linkUrl = $action->exposeCreateInviteLink($invitee);
-    $linkToken = basename(parse_url($linkUrl, PHP_URL_PATH));
-
-    expect(Password::broker()->tokenExists($invitee, $linkToken))->toBeTrue();
+    expect(Password::broker()->getRepository()->recentlyCreatedToken($invitee))->toBeFalse();
 
     Notification::assertNothingSent();
 });
 
-class InviteTestUser extends Authenticatable implements CanResetPasswordContract, MustVerifyEmail
-{
-    use CanResetPassword;
-    use Notifiable;
+it('generates a broker-valid invite URL without sending a notification', function (): void {
+    Notification::fake();
 
-    protected $table = 'users';
+    $inviter = InviteTestUser::query()->create([
+        'name' => 'Admin',
+        'email' => 'admin@example.com',
+        'email_verified_at' => now(),
+        'password' => 'secret',
+    ]);
 
-    protected $guarded = [];
+    $invitee = InviteTestUser::query()->create([
+        'name' => 'Invitee',
+        'email' => 'invitee@example.com',
+        'email_verified_at' => null,
+        'password' => null,
+    ]);
 
-    public $timestamps = true;
+    $this->actingAs($inviter);
 
-    public function hasVerifiedEmail(): bool
-    {
-        return $this->email_verified_at !== null;
-    }
+    $url = null;
 
-    public function markEmailAsVerified(): bool
-    {
-        return $this->forceFill(['email_verified_at' => now()])->save();
-    }
+    Livewire::test(EditInviteTestUser::class, ['record' => $invitee])
+        ->mountAction(CopyInviteLinkAction::class)
+        ->callMountedAction()
+        ->assertHasNoActionErrors()
+        ->assertSchemaStateSet(function (array $data) use (&$url): bool {
+            $url = $data['invite_url'] ?? null;
 
-    public function sendEmailVerificationNotification(): void
-    {
-        //
-    }
+            return is_string($url)
+                && str_contains($url, '/reset-password/')
+                && str_contains($url, 'email=' . urlencode('invitee@example.com'))
+                && str_contains($url, 'invite=1');
+        });
 
-    public function getEmailForVerification(): string
-    {
-        return $this->email;
-    }
+    $token = basename(parse_url($url, PHP_URL_PATH));
 
-    public function can($abilities, $arguments = []): bool
-    {
-        return $abilities === 'update';
-    }
-}
+    expect(Password::broker()->tokenExists($invitee, $token))->toBeTrue();
 
-class InviteTestUserWithCustomResetUrl extends InviteTestUser
-{
-    public function getResetPasswordUrl(string $token, array $parameters = []): string
-    {
-        return URL::to('/custom-reset/' . $token . '?email=' . urlencode($this->email));
-    }
-}
+    Notification::assertNothingSent();
+});
+
+it('invalidates the previous token when generating twice', function (): void {
+    Notification::fake();
+
+    $inviter = InviteTestUser::query()->create([
+        'name' => 'Admin',
+        'email' => 'admin@example.com',
+        'email_verified_at' => now(),
+        'password' => 'secret',
+    ]);
+
+    $invitee = InviteTestUser::query()->create([
+        'name' => 'Invitee',
+        'email' => 'invitee@example.com',
+        'email_verified_at' => null,
+        'password' => null,
+    ]);
+
+    $this->actingAs($inviter);
+
+    $firstUrl = null;
+    $secondUrl = null;
+
+    Livewire::test(EditInviteTestUser::class, ['record' => $invitee])
+        ->mountAction(CopyInviteLinkAction::class)
+        ->callMountedAction()
+        ->assertSchemaStateSet(function (array $data) use (&$firstUrl): bool {
+            $firstUrl = $data['invite_url'] ?? null;
+
+            return filled($firstUrl);
+        })
+        ->callMountedAction()
+        ->assertSchemaStateSet(function (array $data) use (&$secondUrl, &$firstUrl): bool {
+            $secondUrl = $data['invite_url'] ?? null;
+
+            return filled($secondUrl) && $secondUrl !== $firstUrl;
+        });
+
+    $firstToken = basename(parse_url($firstUrl, PHP_URL_PATH));
+    $secondToken = basename(parse_url($secondUrl, PHP_URL_PATH));
+
+    expect(Password::broker()->tokenExists($invitee, $firstToken))->toBeFalse()
+        ->and(Password::broker()->tokenExists($invitee, $secondToken))->toBeTrue();
+
+    Notification::assertNothingSent();
+});

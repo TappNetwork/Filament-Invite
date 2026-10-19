@@ -51,7 +51,11 @@ trait InvitesUsers
 
     protected function canInviteUser(Model $user): bool
     {
-        if ($user instanceof MustVerifyEmail && $user->hasVerifiedEmail()) {
+        if (! $user instanceof MustVerifyEmail) {
+            return false;
+        }
+
+        if ($user->hasVerifiedEmail()) {
             return false;
         }
 

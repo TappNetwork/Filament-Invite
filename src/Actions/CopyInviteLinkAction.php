@@ -4,7 +4,7 @@ namespace Tapp\FilamentInvite\Actions;
 
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Model;
 use Tapp\FilamentInvite\Concerns\InvitesUsers;
 
@@ -29,30 +29,32 @@ class CopyInviteLinkAction extends Action
 
         $this->icon('heroicon-m-clipboard-document');
 
-        $this->hidden(function (Model $user) {
-            if (! $user instanceof MustVerifyEmail) {
-                return true;
-            }
+        $this->hidden(fn (Model $user): bool => ! $this->canInviteUser($user));
 
-            return $user->hasVerifiedEmail() || auth()->user()->can('update', $user) === false;
-        });
-
-        $this->fillForm(function (Model $user): array {
-            return [
-                'invite_url' => $this->createInviteLink($user),
-            ];
-        });
+        $this->fillForm(fn (): array => [
+            'invite_url' => null,
+        ]);
 
         $this->schema([
             TextInput::make('invite_url')
                 ->label(__('filament-invite::invite.copy_link.field_label'))
+                ->placeholder(__('filament-invite::invite.copy_link.field_placeholder'))
                 ->readOnly()
                 ->copyable()
-                ->dehydrated(false),
+                ->dehydrated(false)
+                ->visible(fn (?string $state): bool => filled($state)),
         ]);
 
-        $this->modalSubmitAction(false);
+        $this->modalSubmitActionLabel(__('filament-invite::invite.copy_link.generate'));
 
         $this->modalCancelActionLabel(__('filament-invite::invite.copy_link.close'));
+
+        $this->action(function (Model $user, Action $action, Schema $schema): void {
+            $schema->fill([
+                'invite_url' => $this->createInviteLink($user),
+            ]);
+
+            $action->halt();
+        });
     }
 }

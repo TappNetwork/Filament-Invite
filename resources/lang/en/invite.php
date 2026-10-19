@@ -21,8 +21,10 @@ return [
     'copy_link' => [
         'label' => 'Copy Invite Link',
         'modal_heading' => 'Copy Invite Link',
-        'modal_description' => 'Share this link with the user so they can set their password. No email will be sent.',
+        'modal_description' => 'Generating a link creates a new set-password token and invalidates any earlier invite links for this user, including ones that were emailed. No email will be sent.',
         'field_label' => 'Invite link',
+        'field_placeholder' => 'Click Generate link to create a URL',
+        'generate' => 'Generate link',
         'close' => 'Close',
     ],
 ];
