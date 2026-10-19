@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Tapp\FilamentInvite\FilamentInviteServiceProvider;
+use Tapp\FilamentInvite\Tests\Fixtures\Providers\AdminPanelProvider;
 
 class TestCase extends Orchestra
 {
@@ -44,6 +45,7 @@ class TestCase extends Orchestra
             SupportServiceProvider::class,
             TablesServiceProvider::class,
             WidgetsServiceProvider::class,
+            AdminPanelProvider::class,
             FilamentInviteServiceProvider::class,
         ];
     }

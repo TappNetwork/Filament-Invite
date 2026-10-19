@@ -2,8 +2,6 @@
 
 use Filament\Auth\Pages\PasswordReset\ResetPassword;
 use Filament\Facades\Filament;
-use Filament\Panel;
-use Filament\PanelRegistry;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Event;
@@ -12,6 +10,8 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Livewire\Livewire;
+use Tapp\FilamentInvite\FilamentInvitePlugin;
+use Tapp\FilamentInvite\Http\InviteMiddleware;
 use Tapp\FilamentInvite\Support\InviteUrl;
 use Tapp\FilamentInvite\Tests\Fixtures\Models\InviteTestUser;
 use Tapp\FilamentInvite\Tests\Fixtures\Models\InviteTestUserWithFilamentResetUrl;
@@ -63,20 +63,13 @@ beforeEach(function (): void {
         ->get('/reset-password/{token}', fn () => 'ok')
         ->name('password.reset');
 
-    app(PanelRegistry::class)->register(
-        Panel::make()
-            ->default()
-            ->id('admin')
-            ->path('admin')
-            ->login()
-            ->passwordReset()
-    );
+    $panel = Filament::getPanel('admin');
 
-    Route::middleware('web')
-        ->get('/admin/login', fn () => 'login')
-        ->name('filament.admin.auth.login');
+    expect($panel->hasPlugin(FilamentInvitePlugin::ID))->toBeTrue()
+        ->and($panel->getMiddleware())->toContain(InviteMiddleware::class);
 
-    Route::middleware(['web', 'signed'])
+    // Panel auth routes use the panel middleware stack (not the `web` group).
+    Route::middleware([...$panel->getMiddleware(), 'signed'])
         ->get('/admin/password-reset/reset', ResetPassword::class)
         ->name('filament.admin.auth.password-reset.reset');
 
@@ -86,10 +79,6 @@ beforeEach(function (): void {
 afterEach(function (): void {
     Schema::dropIfExists('password_reset_tokens');
     Schema::dropIfExists('users');
-
-    $registry = app(PanelRegistry::class);
-    $registry->panels = [];
-    $registry->defaultPanel = null;
 });
 
 it('passes invite=1 into getResetPasswordUrl overrides', function (): void {
@@ -121,6 +110,11 @@ it('allows a Filament panel invite reset after 61 minutes', function (): void {
 
     $token = Password::broker()->createToken($user);
     $url = InviteUrl::for($user, $token);
+
+    $route = Route::getRoutes()->getByName('filament.admin.auth.password-reset.reset');
+
+    expect($route->gatherMiddleware())->toContain(InviteMiddleware::class)
+        ->and($route->gatherMiddleware())->not->toContain('web');
 
     $this->get($url)->assertSuccessful();
     expect(session('invite'))->toBeTrue();

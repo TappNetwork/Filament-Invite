@@ -28,6 +28,19 @@ You can publish the config using:
 php artisan filament-invite:install
 ```
 
+The package registers a Filament panel plugin automatically so invite links that use panel password-reset routes get the extended `filament-invite.expire` window. You do not need to add middleware on the panel yourself. You may still register it explicitly if you prefer:
+
+```php
+use Tapp\FilamentInvite\FilamentInvitePlugin;
+
+public function panel(Panel $panel): Panel
+{
+    return $panel
+        // ...
+        ->plugin(FilamentInvitePlugin::make());
+}
+```
+
 ## Requirements
 
 -   User model which implements password resets and email verification (Laravel defaults)

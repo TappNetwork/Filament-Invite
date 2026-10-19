@@ -1,7 +1,6 @@
 <?php
 
-use Filament\Panel;
-use Filament\PanelRegistry;
+use Filament\Facades\Filament;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Password;
@@ -51,21 +50,12 @@ beforeEach(function (): void {
 
     Route::get('/reset-password/{token}', fn () => 'ok')->name('password.reset');
 
-    app(PanelRegistry::class)->register(
-        Panel::make()
-            ->default()
-            ->id('admin')
-            ->path('admin')
-    );
+    Filament::setCurrentPanel('admin');
 });
 
 afterEach(function (): void {
     Schema::dropIfExists('password_reset_tokens');
     Schema::dropIfExists('users');
-
-    $registry = app(PanelRegistry::class);
-    $registry->panels = [];
-    $registry->defaultPanel = null;
 });
 
 it('registers copy invite link action with the expected default name', function (): void {
