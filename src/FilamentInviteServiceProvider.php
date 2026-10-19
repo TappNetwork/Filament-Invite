@@ -2,6 +2,7 @@
 
 namespace Tapp\FilamentInvite;
 
+use Filament\PanelRegistry;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Event;
 use Livewire\Livewire;
@@ -33,9 +34,19 @@ class FilamentInviteServiceProvider extends PackageServiceProvider
             ->hasTranslations();
     }
 
+    public function packageRegistered(): void
+    {
+        // Attach after each PanelProvider has fully configured its panel, but while
+        // PanelRegistry is still resolving — before Filament routes call getMiddleware().
+        $this->app->afterResolving(PanelRegistry::class, function (PanelRegistry $registry): void {
+            foreach ($registry->all() as $panel) {
+                FilamentInvitePlugin::registerOnPanel($panel);
+            }
+        });
+    }
+
     public function packageBooted(): void
     {
-        // Listeners
         Event::listen(function (PasswordReset $event) {
             if (! $event->user->hasVerifiedEmail()) {
                 $event->user->markEmailAsVerified();
@@ -44,9 +55,8 @@ class FilamentInviteServiceProvider extends PackageServiceProvider
             session()->forget('invite');
         });
 
-        $router = $this->app['router'];
-
-        $router->pushMiddlewareToGroup('web', InviteMiddleware::class);
+        // Keep support for non-panel password.reset routes (e.g. Laravel's default broker routes).
+        $this->app['router']->pushMiddlewareToGroup('web', InviteMiddleware::class);
 
         Livewire::addPersistentMiddleware([
             InviteMiddleware::class,

@@ -28,6 +28,21 @@ You can publish the config using:
 php artisan filament-invite:install
 ```
 
+The package attaches `FilamentInvitePlugin` to every panel while `PanelRegistry` is resolving (after your panel provider configures middleware, before Filament routes snapshot it). That puts `InviteMiddleware` on panel password-reset routes so invite links get the extended `filament-invite.expire` window — no panel provider changes required.
+
+You may still register the plugin explicitly; duplicate registration is a no-op:
+
+```php
+use Tapp\FilamentInvite\FilamentInvitePlugin;
+
+public function panel(Panel $panel): Panel
+{
+    return $panel
+        // ...
+        ->plugin(FilamentInvitePlugin::make());
+}
+```
+
 ## Requirements
 
 -   User model which implements password resets and email verification (Laravel defaults)
@@ -42,6 +57,7 @@ public static function table(Table $table): Table
     return $table
         ->recordActions([
             \Tapp\FilamentInvite\Actions\InviteAction::make(),
+            \Tapp\FilamentInvite\Actions\CopyInviteLinkAction::make(),
         ]);
 }
 ```
@@ -54,10 +70,19 @@ Add invite action to header actions in your resource view or edit page (e.g. `Ap
     {
         return [
             \Tapp\FilamentInvite\Actions\InviteAction::make(),
+            \Tapp\FilamentInvite\Actions\CopyInviteLinkAction::make(),
         ];
     }
 
 ```
+
+### Copy invite link (no email)
+
+Use `CopyInviteLinkAction` when you want to generate the same set-password URL the invite email would contain, show it in a modal, and copy it to the clipboard — without sending a notification. This is useful when the app has no mail driver configured (for example Laravel Cloud without a verified sending domain).
+
+Opening the modal does not create a token. The admin clicks **Generate link** to mint the broker token and reveal the URL (the modal stays open for copying). Generating again invalidates any earlier invite link for that user, including emailed ones.
+
+Email invite (`InviteAction` / `InviteBulkAction`) remains the default; add `CopyInviteLinkAction` only where you need the manual copy flow. Eligibility matches `InviteAction` (unverified users the admin can update). The link uses the same password-broker token, package reset route / `getResetPasswordUrl()` override, and `invite=1` extended-expiry behavior as the email.
 
 Add invite bulk action to table toolbar actions
 

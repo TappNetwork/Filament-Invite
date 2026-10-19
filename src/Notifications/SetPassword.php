@@ -5,6 +5,7 @@ namespace Tapp\FilamentInvite\Notifications;
 use Closure;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Tapp\FilamentInvite\Support\InviteUrl;
 
 class SetPassword extends Notification
 {
@@ -56,32 +57,10 @@ class SetPassword extends Notification
             return call_user_func(static::$toMailCallback, $notifiable, $this->token);
         }
 
-        $email = '';
-
-        if (is_string($notifiable)) {
-            $email = $notifiable;
-        }
-
-        if (is_object($notifiable) && isset($notifiable->email)) {
-            $email = $notifiable->email;
-        }
-
-        $message = (new MailMessage)
+        return (new MailMessage)
             ->subject(__('Account created'))
-            ->line(__('An account for you has been created! Please set a password for your account!'));
-
-        if (method_exists($notifiable, 'getResetPasswordUrl')) {
-            return $message->action(
-                __('Set Password'),
-                $notifiable->getResetPasswordUrl($this->token)
-            );
-        }
-
-        return $message->action(__('Set Password'), url(config('app.url') . route(config('filament-invite.routes.reset'), [
-            'token' => $this->token,
-            'email' => $email,
-            'invite' => true,
-        ], false)));
+            ->line(__('An account for you has been created! Please set a password for your account!'))
+            ->action(__('Set Password'), InviteUrl::for($notifiable, $this->token));
     }
 
     /**
