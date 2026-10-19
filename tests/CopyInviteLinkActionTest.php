@@ -101,7 +101,7 @@ it('uses getResetPasswordUrl when the user model defines it', function (): void 
 
     expect($mail->actionUrl)
         ->toBe(InviteUrl::for($invitee, $token))
-        ->toBe($invitee->getResetPasswordUrl($token));
+        ->toBe($invitee->getResetPasswordUrl($token, ['invite' => 1]));
 });
 
 it('hides the action for verified users', function (): void {
