@@ -18,4 +18,11 @@ return [
             ],
         ],
     ],
+    'copy_link' => [
+        'label' => 'Copy Invite Link',
+        'modal_heading' => 'Copy Invite Link',
+        'modal_description' => 'Share this link with the user so they can set their password. No email will be sent.',
+        'field_label' => 'Invite link',
+        'close' => 'Close',
+    ],
 ];

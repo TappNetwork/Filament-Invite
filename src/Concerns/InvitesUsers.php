@@ -10,10 +10,11 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Password;
 use RuntimeException;
 use Tapp\FilamentInvite\Notifications\SetPassword;
+use Tapp\FilamentInvite\Support\InviteUrl;
 
 trait InvitesUsers
 {
-    protected function sendInviteToUser(Model $user): void
+    protected function createInviteToken(Model $user): string
     {
         $broker = Password::broker(Filament::getAuthPasswordBroker());
 
@@ -21,7 +22,23 @@ trait InvitesUsers
             throw new RuntimeException('Unexpected password broker implementation.');
         }
 
-        $token = $broker->createToken($user);
+        return $broker->createToken($user);
+    }
+
+    protected function createInviteLink(Model $user): string
+    {
+        if (! $this->canInviteUser($user)) {
+            throw new RuntimeException('User cannot be invited.');
+        }
+
+        $token = $this->createInviteToken($user);
+
+        return InviteUrl::for($user, $token);
+    }
+
+    protected function sendInviteToUser(Model $user): void
+    {
+        $token = $this->createInviteToken($user);
 
         if (method_exists($user, 'sendPasswordSetNotification')) {
             $user->sendPasswordSetNotification($token);

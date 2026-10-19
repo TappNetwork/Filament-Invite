@@ -42,6 +42,7 @@ public static function table(Table $table): Table
     return $table
         ->recordActions([
             \Tapp\FilamentInvite\Actions\InviteAction::make(),
+            \Tapp\FilamentInvite\Actions\CopyInviteLinkAction::make(),
         ]);
 }
 ```
@@ -54,10 +55,17 @@ Add invite action to header actions in your resource view or edit page (e.g. `Ap
     {
         return [
             \Tapp\FilamentInvite\Actions\InviteAction::make(),
+            \Tapp\FilamentInvite\Actions\CopyInviteLinkAction::make(),
         ];
     }
 
 ```
+
+### Copy invite link (no email)
+
+Use `CopyInviteLinkAction` when you want to generate the same set-password URL the invite email would contain, show it in a modal, and copy it to the clipboard — without sending a notification. This is useful when the app has no mail driver configured (for example Laravel Cloud without a verified sending domain).
+
+Email invite (`InviteAction` / `InviteBulkAction`) remains the default; add `CopyInviteLinkAction` only where you need the manual copy flow. Eligibility matches `InviteAction` (unverified users the admin can update). The link uses the same password-broker token, package reset route / `getResetPasswordUrl()` override, and `invite=1` extended-expiry behavior as the email.
 
 Add invite bulk action to table toolbar actions
 
